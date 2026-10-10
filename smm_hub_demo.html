@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMM HUB — Demo Panel</title>
+<style>
+:root{--teal:#079b8c;--teal2:#087e73;--orange:#ff6934;--navy:#102d4d;--ink:#29434a;--muted:#77858d;--line:#dce8ec;--bg:#f2faf8}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(150deg,#effbf7,#f7f9fc);font-family:Arial,Helvetica,sans-serif;color:#263b45}
+header{background:#fff;border-bottom:2px solid #cbeee8;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:5}
+.logo{font-size:24px;font-weight:900;color:#086e69;letter-spacing:1px}.logo span{color:var(--orange)}
+button,input,select,textarea{font:inherit}button{cursor:pointer;border:0}
+.menu-btn{font-size:25px;background:#f8fcfc;border:1px solid var(--line);border-radius:12px;padding:7px 14px;color:#234}
+nav{display:none;background:#fff;padding:10px 16px 18px;border-bottom:1px solid var(--line);position:sticky;top:59px;z-index:4;box-shadow:0 8px 18px #0b3b3810}
+nav.open{display:grid;grid-template-columns:1fr 1fr;gap:8px}nav button{background:#f5fbfa;color:#2c4a4c;text-align:left;padding:13px;border-radius:10px;border:1px solid #e1eeed}
+main{max-width:760px;margin:auto;padding:16px 14px 45px}
+.hero{text-align:center;margin:10px 0 20px;color:#71848d;font-size:12px;letter-spacing:2px}.hero b{display:block;font-size:22px;color:#e8ad32;letter-spacing:0;margin:5px}
+.stats{display:grid;gap:12px;margin-bottom:16px}.stat{background:linear-gradient(110deg,#0d2949,#174768);border-radius:22px;color:#fff;padding:18px 20px;box-shadow:0 8px 18px #0b2c4518;border-left:5px solid var(--teal)}.stat:nth-child(2){border-color:#ffbc32}.stat:nth-child(3){border-color:#16bf74}.stat small{display:block;color:#bdcbd9;font-weight:bold;letter-spacing:1.5px;margin-bottom:7px}.stat strong{font-size:24px;overflow-wrap:anywhere}.stat:nth-child(2) strong{color:#ffc443}.stat:nth-child(3) strong{color:#1ec477}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0 24px}.primary,.support{border-radius:18px;padding:17px 10px;font-weight:bold;color:white;background:linear-gradient(100deg,#ff5b2c,#ff7b39);box-shadow:0 8px 20px #ff6c3625}.support{background:#064735;line-height:1.5}
+.card{background:#fff;border:1px solid #e0e9eb;border-radius:24px;padding:18px 16px;margin:16px 0;box-shadow:0 8px 25px #183f3b08}
+h2{font-size:20px;color:#126c65;margin:4px 0 16px}h3{font-size:15px;letter-spacing:1px;color:#315d5b;margin:20px 0 9px}
+label{display:block;font-size:14px;color:#315d5b;font-weight:bold;margin:15px 0 8px}
+input,select,textarea{width:100%;padding:15px;border:1.5px solid #dce7ec;border-radius:15px;background:#fbfdff;color:#263b45;outline:none;min-height:52px}
+input:focus,select:focus,textarea:focus{border-color:#75d3c8;box-shadow:0 0 0 3px #70d2c522}
+.field-note{font-size:13px;color:#87939a;margin-top:7px}.description{background:#f8fdfc;border:1px solid #d9efeb;border-left:6px solid var(--teal);padding:15px;border-radius:18px;white-space:pre-line;line-height:1.55;color:#53656e}
+.full{width:100%;margin-top:14px;padding:17px;border-radius:17px;color:#fff;background:linear-gradient(100deg,#ff5b2c,#ff7b39);font-size:17px;font-weight:bold}
+.secondary{background:#eaf8f5;color:#126c65;border:1px solid #c9e9e3;padding:11px 14px;border-radius:12px;font-weight:bold}
+.grid-pay{display:grid;grid-template-columns:1fr 1fr;gap:9px}.pay{background:#f8fcf7;border:1px solid #bfe6de;border-top:4px solid var(--teal);padding:14px 8px;border-radius:16px;color:#34484c}.pay.selected{border-top-color:var(--orange);background:#fff6e9;box-shadow:0 0 0 2px #ffb38c44}
+.hidden{display:none!important}.notice{background:#fff7e5;border:1px solid #ffe0a3;border-radius:14px;padding:12px;color:#725a26;font-size:13px;line-height:1.5;margin:12px 0}
+.item{padding:13px 0;border-bottom:1px solid #e7eeee}.item:last-child{border-bottom:0}.pill{display:inline-block;background:#e6f7f2;color:#087e73;border-radius:99px;padding:5px 9px;font-size:12px;font-weight:bold}.muted{color:#7b8990;font-size:13px}.amount{font-weight:bold;color:#087e73}
+.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:13px}td,th{text-align:left;padding:10px;border-bottom:1px solid #e5eeee}
+footer{text-align:center;color:#87969a;font-size:12px;padding:20px}
+@media(min-width:620px){.stats{grid-template-columns:repeat(3,1fr)}.stat{padding:16px 13px}.stat strong{font-size:20px}.stat small{font-size:10px}.card{padding:22px}.logo{font-size:28px}}
+</style>
+</head>
+<body>
+<header><div class="logo">◢ SMM <span>HUB</span> 👑</div><button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button></header>
+<nav id="nav">
+<button data-page="dashboard">🏠 Dashboard</button><button data-page="services">🛍️ Services / New Order</button>
+<button data-page="orders">📋 Orders</button><button data-page="funds">💳 Add Funds</button>
+<button data-page="transactions">🧾 Transactions</button><button data-page="tickets">🎫 Tickets</button>
+<button data-page="child">👥 Child Panels</button><button data-page="api">🔌 API</button>
+<button data-page="admin">⚙️ Admin Demo</button>
+</nav>
+<main>
+<section id="dashboard" class="page">
+<div class="hero">IN THE NAME OF <b>Allah Almighty</b> THE MOST MERCIFUL, THE MOST BENEFICENT</div>
+<div class="stats">
+<div class="stat"><small>ACCOUNT USERNAME</small><strong id="username">demo_user</strong></div>
+<div class="stat"><small>TOTAL SPENT</small><strong id="spent">PKR 0.00</strong></div>
+<div class="stat"><small>AVAILABLE BALANCE</small><strong id="balance">PKR 0.00</strong></div>
+</div>
+<div class="actions"><button class="primary" data-page="funds">＋ ADD FUND</button><button class="support" onclick="alert('Demo only: connect your official support WhatsApp number here.')">☏ WHATSAPP SUPPORT<br><small>Set your support number</small></button></div>
+<div class="card"><h2>Quick Start</h2><p>Choose a service, enter the public post/video link, set quantity and submit a demo order.</p><button class="full" data-page="services">Create New Order</button><div class="notice">Demo mode: data is saved only in this browser. No real payment is taken and no social-media order is sent.</div></div>
+</section>
+<section id="services" class="page hidden">
+<div class="card"><h2>New Order</h2>
+<label for="search">SEARCH FOR A SERVICE</label><input id="search" placeholder="Search TikTok, Instagram, likes...">
+<label for="category">CHECK CATEGORY</label><select id="category"><option>TikTok → Likes 100% Non Drop</option><option>TikTok → Followers [Fast]</option><option>TikTok → Views</option><option>Instagram → Likes</option><option>Instagram → Followers</option><option>YouTube → Views</option><option>YouTube → Subscribers</option><option>Facebook → Page Likes</option><option>WhatsApp → Channel Followers</option></select>
+<label for="service">SELECT SERVICE</label><select id="service">
+<option value="4173" data-price="277.035" data-min="1000" data-max="1000000">4173 🚀 TikTok Likes – Real Sponsor Ads (Demo)</option>
+<option value="4174" data-price="350.8898" data-min="1000" data-max="1000000">4174 🚀 TikTok Likes + Bonus Views (Demo)</option>
+<option value="2101" data-price="180" data-min="100" data-max="500000">2101 Instagram Likes (Demo)</option>
+<option value="3101" data-price="420" data-min="100" data-max="100000">3101 YouTube Views (Demo)</option>
+<option value="5101" data-price="250" data-min="50" data-max="100000">5101 Facebook Page Likes (Demo)</option>
+</select>
+<div class="notice" id="serviceInfo">Demo service. No real delivery is connected.</div>
+<label>DESCRIPTION</label><div class="description" id="description">⚠️ Important settings before ordering\n1. Use a valid public post/video link.\n2. Check the service details and minimum quantity.\n3. Only submit content you own or have permission to promote.\n\nDemo only: no real engagement is delivered.</div>
+<label for="link">LINK</label><input id="link" placeholder="Paste public TikTok/video/post link">
+<label>AVERAGE TIME</label><input value="Demo estimate — not a real delivery time" readonly>
+<label for="quantity">QUANTITY</label><input id="quantity" type="number" min="1000" placeholder="Enter quantity">
+<div class="field-note" id="limits">Min: 1000 — Max: 1000000</div>
+<label for="charge">CHARGE (PKR)</label><input id="charge" value="0.00" readonly>
+<button class="full" id="submitOrder">Submit Demo Order</button>
+<p class="muted">The displayed prices are sample values and must be configured before launch.</p>
+</div></section>
+<section id="funds" class="page hidden">
+<div class="card"><h2>Add Funds</h2><div class="notice">Demo payment form only. Do not send money based on this page. Real payments need a verified payment provider and server-side confirmation.</div>
+<label>SELECT PAYMENT METHOD</label><div class="grid-pay" id="payGrid">
+<button class="pay selected" data-method="Easypaisa">🟢 Easypaisa</button><button class="pay" data-method="JazzCash">🟠 JazzCash</button><button class="pay" data-method="Bank Transfer">🏦 Bank Transfer</button><button class="pay" data-method="PayFast">💳 PayFast</button><button class="pay" data-method="UPaisa">🟣 UPaisa</button><button class="pay" data-method="Crypto">₿ Crypto (demo)</button></div>
+<label for="method">METHOD</label><select id="method"><option>Easypaisa</option><option>JazzCash</option><option>Bank Transfer</option><option>PayFast</option><option>UPaisa</option><option>Crypto</option></select>
+<label for="fundAmount">AMOUNT (PKR)</label><input id="fundAmount" type="number" min="100" placeholder="Enter amount">
+<label for="reference">PAYMENT REFERENCE (OPTIONAL)</label><input id="reference" placeholder="Demo reference / transaction ID">
+<button class="full" id="fundSubmit">Create Demo Deposit Request</button>
+<div id="fundResult"></div>
+</div></section>
+<section id="orders" class="page hidden"><div class="card"><h2>Orders</h2><div id="ordersList"><p class="muted">No demo orders yet.</p></div></div></section>
+<section id="transactions" class="page hidden"><div class="card"><h2>Transactions</h2><div id="transactionsList"><p class="muted">No demo transactions yet.</p></div></div></section>
+<section id="tickets" class="page hidden"><div class="card"><h2>Support Tickets</h2><label for="ticketSubject">SUBJECT</label><input id="ticketSubject" placeholder="What do you need help with?"><label for="ticketMsg">MESSAGE</label><textarea id="ticketMsg" rows="4" placeholder="Describe your issue"></textarea><button class="full" id="ticketSubmit">Create Demo Ticket</button><div id="ticketsList"></div></div></section>
+<section id="child" class="page hidden"><div class="card"><h2>Child Panels</h2><p>Child-panel creation is a placeholder in this front-end demo. A real multi-user system needs a backend, access controls and billing rules.</p><button class="secondary" onclick="alert('Backend connection required for child panel creation.')">Request Child Panel (Demo)</button></div></section>
+<section id="api" class="page hidden"><div class="card"><h2>API</h2><p>API credentials must never be stored in front-end HTML. Configure API access on a secure server only.</p><div class="notice">Status: Not connected. No API key is configured.</div></div></section>
+<section id="admin" class="page hidden"><div class="card"><h2>Admin Panel — Demo</h2><div class="notice">This is not a secure admin login. Do not use it to manage real customer funds. Production admin functions must be protected by server-side authentication.</div><label for="adminName">DISPLAY USERNAME</label><input id="adminName" placeholder="demo_user"><button class="full" id="saveName">Save Demo Username</button><label>DEMO BALANCE ADJUSTMENT (PKR)</label><input id="adminBalance" type="number" placeholder="Amount to add or subtract"><button class="secondary" id="adjustBalance">Apply Demo Adjustment</button><p class="muted">This only changes local browser demo data.</p></div></section>
+</main><footer>SMM HUB demo • Front-end prototype only • No real payments or delivery</footer>
+<script>
+const $=id=>document.getElementById(id);
+const money=n=>'PKR '+Number(n||0).toLocaleString('en-PK',{minimumFractionDigits:2,maximumFractionDigits:2});
+let state={balance:0,spent:0,orders:[],transactions:[],tickets:[],username:'demo_user'};
+try{const saved=localStorage.getItem('smmHubDemo');if(saved)state={...state,...JSON.parse(saved)}}catch(e){}
+function save(){try{localStorage.setItem('smmHubDemo',JSON.stringify(state))}catch(e){};renderStats()}
+function renderStats(){$('username').textContent=state.username;$('spent').textContent=money(state.spent);$('balance').textContent=money(state.balance)}
+function go(page){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('hidden',p.id!==page));$('nav').classList.remove('open');window.scrollTo({top:0,behavior:'smooth'});if(page==='orders')renderOrders();if(page==='transactions')renderTransactions();if(page==='tickets')renderTickets()}
+document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));
+$('menuBtn').onclick=()=>$('nav').classList.toggle('open');
+function selectedService(){return $('service').selectedOptions[0]}
+function updateService(){const o=selectedService();const min=Number(o.dataset.min),max=Number(o.dataset.max);$('quantity').min=min;$('quantity').placeholder='Minimum '+min;$('limits').textContent=`Min: ${min.toLocaleString()} — Max: ${max.toLocaleString()}`;$('serviceInfo').textContent=`Service ID ${o.value} • Sample rate ${money(o.dataset.price)} per 1,000 • Demo only`;$('quantity').value='';$('charge').value='0.00';}
+function calc(){const o=selectedService(),q=Number($('quantity').value||0);$('charge').value=(q*Number(o.dataset.price)/1000).toFixed(2)}
+$('service').addEventListener('change',updateService);$('quantity').addEventListener('input',calc);
+$('search').addEventListener('input',()=>{const term=$('search').value.toLowerCase();[...$('service').options].forEach(o=>o.hidden=!o.text.toLowerCase().includes(term));const match=[...$('service').options].find(o=>!o.hidden);if(match)$('service').value=match.value;updateService()});
+$('category').addEventListener('change',()=>{$('search').value='';const c=$('category').value.toLowerCase();const idx=c.includes('instagram')?2:c.includes('youtube')?3:c.includes('facebook')?4:0;$('service').selectedIndex=idx;updateService()});
+$('submitOrder').onclick=()=>{const o=selectedService(),q=Number($('quantity').value),min=Number(o.dataset.min),max=Number(o.dataset.max),link=$('link').value.trim(),cost=Number($('charge').value);if(!/^https?:\/\/\S+/i.test(link)){alert('Please enter a valid URL beginning with https://');return}if(!Number.isInteger(q)||q<min||q>max){alert(`Quantity must be between ${min} and ${max}.`);return}if(cost>state.balance){alert('Insufficient demo balance. Add a demo deposit request; it will not credit funds automatically.');return}state.balance-=cost;state.spent+=cost;state.orders.unshift({id:Date.now(),service:o.text,link,quantity:q,charge:cost,status:'Demo / Not Sent',date:new Date().toLocaleString()});save();alert('Demo order saved in this browser. No real order was sent.');$('link').value='';$('quantity').value='';$('charge').value='0.00';go('orders')};
+document.querySelectorAll('.pay').forEach(b=>b.onclick=()=>{document.querySelectorAll('.pay').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');$('method').value=b.dataset.method});
+$('method').onchange=()=>{document.querySelectorAll('.pay').forEach(b=>b.classList.toggle('selected',b.dataset.method===$('method').value))};
+$('fundSubmit').onclick=()=>{const amount=Number($('fundAmount').value);if(!Number.isFinite(amount)||amount<100){alert('Enter a demo amount of at least PKR 100.');return}const tx={id:Date.now(),type:'Deposit request',amount,method:$('method').value,reference:$('reference').value.trim()||'Not provided',status:'Pending — not paid',date:new Date().toLocaleString()};state.transactions.unshift(tx);save();$('fundResult').innerHTML='<div class="notice">Demo request created as pending. Your balance has not been increased. Real deposits require verified server-side payment confirmation.</div>'; $('fundAmount').value='';$('reference').value='';renderTransactions()};
+function renderOrders(){$('ordersList').innerHTML=state.orders.length?state.orders.map(o=>`<div class="item"><b>#${o.id.toString().slice(-7)} · ${esc(o.service)}</b><p class="muted">${esc(o.date)}</p><p>Quantity: ${o.quantity.toLocaleString()} · Charge: <span class="amount">${money(o.charge)}</span></p><p class="muted">Link: ${esc(o.link)}</p><span class="pill">${o.status}</span></div>`).join(''):'<p class="muted">No demo orders yet.</p>'}
+function renderTransactions(){$('transactionsList').innerHTML=state.transactions.length?state.transactions.map(t=>`<div class="item"><b>${esc(t.type)} · ${money(t.amount)}</b><p class="muted">${esc(t.date)} · ${esc(t.method||'')}</p><p>Reference: ${esc(t.reference||'—')}</p><span class="pill">${esc(t.status)}</span></div>`).join(''):'<p class="muted">No demo transactions yet.</p>'}
+$('ticketSubmit').onclick=()=>{const s=$('ticketSubject').value.trim(),m=$('ticketMsg').value.trim();if(!s||!m){alert('Enter a subject and message.');return}state.tickets.unshift({s,m,date:new Date().toLocaleString(),status:'Open (demo)'});save();$('ticketSubject').value='';$('ticketMsg').value='';renderTickets();alert('Demo ticket saved locally.')};
+function renderTickets(){$('ticketsList').innerHTML=state.tickets.map(t=>`<div class="item"><b>${esc(t.s)}</b><p>${esc(t.m)}</p><p class="muted">${esc(t.date)} · ${t.status}</p></div>`).join('')}
+$('saveName').onclick=()=>{const n=$('adminName').value.trim();if(!n){alert('Enter a username');return}state.username=n;save();alert('Demo username saved locally.')};
+$('adjustBalance').onclick=()=>{const n=Number($('adminBalance').value);if(!Number.isFinite(n)||n===0){alert('Enter a non-zero adjustment.');return}state.balance=Math.max(0,state.balance+n);state.transactions.unshift({id:Date.now(),type:'Admin demo adjustment',amount:Math.abs(n),method:'Local demo',reference:n>0?'Added':'Removed',status:'Demo only',date:new Date().toLocaleString()});$('adminBalance').value='';save();alert('Demo balance updated in this browser.');};
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+renderStats();updateService();renderOrders();renderTransactions();
+</script>
+</body></html>
